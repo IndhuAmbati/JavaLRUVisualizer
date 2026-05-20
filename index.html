@@ -4,55 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LRU Cache Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>LRU Cache Visualizer</h1>
-            <p>Interactive visualization of the Least Recently Used cache algorithm</p>
-        </header>
+    <div class="page-shell">
+        <div class="hero-glow hero-glow-left"></div>
+        <div class="hero-glow hero-glow-right"></div>
 
-        <div class="controls">
-            <div class="input-group">
-                <label for="capacity">Cache Capacity:</label>
-                <input type="number" id="capacity" value="4" min="1" max="10">
-                <button type="button" onclick="initializeCache()">Initialize</button>
-            </div>
+        <main class="container">
+            <section class="hero">
+                <div class="hero-copy">
+                    <span class="eyebrow">Data Structures Lab</span>
+                    <h1>LRU Cache Visualizer</h1>
+                    <p>
+                        Explore how Least Recently Used caching updates, reorders, and evicts entries in real time.
+                    </p>
+                    <div class="hero-pills">
+                        <span>Most Recent first</span>
+                        <span>Eviction tracking</span>
+                        <span>Instant log updates</span>
+                    </div>
+                </div>
 
-            <div class="input-group">
-                <label for="key">Key:</label>
-                <input type="number" id="key" placeholder="Enter key">
-                <label for="value">Value:</label>
-                <input type="number" id="value" placeholder="Enter value">
-                <button type="button" onclick="putOperation()">PUT</button>
-                <button type="button" onclick="getOperation()">GET</button>
-                <button type="button" onclick="deleteOperation()">DELETE</button>
-            </div>
-        </div>
+                <aside class="hero-panel">
+                    <div class="panel-badge">Live Cache Snapshot</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <span class="stat-label">Capacity</span>
+                            <strong id="capacity-stat">4</strong>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Items</span>
+                            <strong id="size-stat">0</strong>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Most Recent</span>
+                            <strong id="mru-stat">-</strong>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-label">Least Recent</span>
+                            <strong id="lru-stat">-</strong>
+                        </div>
+                    </div>
+                </aside>
+            </section>
 
-        <div class="visualization">
-            <div class="cache-container">
-                <h3>Cache State (Most Recent to Least Recent)</h3>
-                <div id="cache-display" class="cache-display"></div>
-            </div>
+            <section class="workspace">
+                <div class="card controls-card">
+                    <div class="section-heading">
+                        <div>
+                            <span class="kicker">Controls</span>
+                            <h2>Configure the cache and run operations</h2>
+                        </div>
+                        <p>Use integer keys and values to see ordering changes happen instantly.</p>
+                    </div>
 
-            <div class="operations-log">
-                <h3>Operations Log</h3>
-                <div id="log" class="log"></div>
-                <button type="button" onclick="clearLog()">Clear Log</button>
-            </div>
-        </div>
+                    <div class="control-stack">
+                        <div class="control-row control-row-capacity">
+                            <label class="field">
+                                <span>Cache Capacity</span>
+                                <input type="number" id="capacity" value="4" min="1" max="10">
+                            </label>
+                            <button type="button" id="initializeBtn">Initialize Cache</button>
+                        </div>
 
-        <div class="info">
-            <h3>How LRU Cache Works</h3>
-            <ul>
-                <li><strong>GET:</strong> Retrieves the value and moves that item to the front.</li>
-                <li><strong>PUT:</strong> Adds or updates an item and evicts the least recent item when full.</li>
-                <li><strong>DELETE:</strong> Removes a key from the cache if it exists.</li>
-                <li><strong>Capacity:</strong> Maximum number of items the cache can hold.</li>
-            </ul>
-        </div>
+                        <div class="control-row control-row-ops">
+                            <label class="field">
+                                <span>Key</span>
+                                <input type="number" id="key" placeholder="Enter key">
+                            </label>
+                            <label class="field">
+                                <span>Value</span>
+                                <input type="number" id="value" placeholder="Enter value">
+                            </label>
+                            <div class="action-group">
+                                <button type="button" id="putBtn">PUT</button>
+                                <button type="button" id="getBtn" class="secondary">GET</button>
+                                <button type="button" id="deleteBtn" class="danger">DELETE</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="status-banner" class="status-banner">
+                        Cache ready. Initialize or begin testing operations.
+                    </div>
+                </div>
+
+                <div class="visual-grid">
+                    <section class="card cache-card">
+                        <div class="section-heading compact">
+                            <div>
+                                <span class="kicker">Visualization</span>
+                                <h2>Cache State</h2>
+                            </div>
+                            <p>Most Recent to Least Recent</p>
+                        </div>
+                        <div id="cache-display" class="cache-display"></div>
+                    </section>
+
+                    <section class="card log-card">
+                        <div class="section-heading compact">
+                            <div>
+                                <span class="kicker">Trace</span>
+                                <h2>Operations Log</h2>
+                            </div>
+                            <button type="button" id="clearLogBtn" class="ghost">Clear Log</button>
+                        </div>
+                        <div id="log" class="log"></div>
+                    </section>
+                </div>
+
+                <section class="card info-card">
+                    <div class="section-heading compact">
+                        <div>
+                            <span class="kicker">Concept</span>
+                            <h2>How LRU behaves</h2>
+                        </div>
+                    </div>
+                    <div class="info-grid">
+                        <article>
+                            <h3>GET</h3>
+                            <p>Reads a value and moves that entry to the most recent position.</p>
+                        </article>
+                        <article>
+                            <h3>PUT</h3>
+                            <p>Adds or updates an entry and may evict the oldest one if capacity is full.</p>
+                        </article>
+                        <article>
+                            <h3>DELETE</h3>
+                            <p>Removes an entry from the cache and updates the current ordering.</p>
+                        </article>
+                        <article>
+                            <h3>Capacity</h3>
+                            <p>Defines the maximum number of entries the cache can keep at one time.</p>
+                        </article>
+                    </div>
+                </section>
+            </section>
+        </main>
     </div>
 
     <script src="script.js"></script>
